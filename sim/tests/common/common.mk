@@ -1,6 +1,6 @@
 ADD_ASM_MACRO ?= -D__ASSEMBLY__=1
 
-FLAGS = -O3 -funroll-loops -fpeel-loops -fgcse-sm -fgcse-las $(ADD_FLAGS)
+FLAGS = -O3 -fno-inline -funroll-loops -fpeel-loops -fgcse-sm -fgcse-las $(ADD_FLAGS)
 FLAGS_STR = "$(FLAGS)"
 
 CFLAGS_COMMON = -static -std=gnu99 -fno-common -fno-builtin-printf -DTCM=$(TCM)
