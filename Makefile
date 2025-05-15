@@ -131,6 +131,7 @@ todo_list    := $(bld_dir)/todo.txt
 # Environment
 export CROSS_PREFIX  ?= riscv64-unknown-elf-
 export RISCV_GCC     ?= $(CROSS_PREFIX)gcc
+export RISCV_CXX     ?= $(CROSS_PREFIX)g++
 export RISCV_OBJDUMP ?= $(CROSS_PREFIX)objdump -D
 export RISCV_OBJCOPY ?= $(CROSS_PREFIX)objcopy -O verilog
 export RISCV_READELF ?= $(CROSS_PREFIX)readelf -s
@@ -226,6 +227,9 @@ riscv_arch: | $(bld_dir)
 
 hello: | $(bld_dir)
 	-$(MAKE) -C $(tst_dir)/hello EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
+hello_cpp: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/hello_cpp EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
 clean_hex: | $(bld_dir)
 	$(RM) $(bld_dir)/*.hex
