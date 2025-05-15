@@ -1,3 +1,5 @@
+#include <cstring>
+
 #define SC_SIM_OUTPORT (0xf0000000)
 
 static void sc_puts(const char *str, long strlen) {
@@ -9,6 +11,6 @@ static void sc_puts(const char *str, long strlen) {
 static constexpr auto kHello = "Hello from SCR1!\n";
 
 int main() {
-    sc_puts(kHello, sizeof("Hello from SCR1!\n") - 1);
+    sc_puts(kHello, strlen(kHello));
     return 0;
 }
