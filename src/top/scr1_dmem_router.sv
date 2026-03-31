@@ -69,7 +69,8 @@ typedef enum logic {
 typedef enum logic [1:0] {
     SCR1_SEL_PORT0,
     SCR1_SEL_PORT1,
-    SCR1_SEL_PORT2
+    SCR1_SEL_PORT2,
+    SCR1_SEL_INVALID
 } type_scr1_sel_e;
 
 //-------------------------------------------------------------------------------
@@ -91,6 +92,8 @@ always_comb begin
         port_sel    = SCR1_SEL_PORT1;
     end else if ((dmem_addr & SCR1_PORT2_ADDR_MASK) == SCR1_PORT2_ADDR_PATTERN) begin
         port_sel    = SCR1_SEL_PORT2;
+    end else if (dmem_addr == 32'b0) begin
+        port_sel    = SCR1_SEL_INVALID;
     end
 end
 
@@ -104,6 +107,8 @@ always_ff @(negedge rst_n, posedge clk) begin
                 if (dmem_req & sel_req_ack) begin
                     fsm         <= SCR1_FSM_DATA;
                     port_sel_r  <= port_sel;
+                end else begin
+                    port_sel_r  <= SCR1_SEL_PORT0;
                 end
             end
             SCR1_FSM_DATA : begin
@@ -132,10 +137,11 @@ end
 always_comb begin
     if ((fsm == SCR1_FSM_ADDR) | ((fsm == SCR1_FSM_DATA) & (sel_resp == SCR1_MEM_RESP_RDY_OK))) begin
         case (port_sel)
-            SCR1_SEL_PORT0  : sel_req_ack   = port0_req_ack;
-            SCR1_SEL_PORT1  : sel_req_ack   = port1_req_ack;
-            SCR1_SEL_PORT2  : sel_req_ack   = port2_req_ack;
-            default         : sel_req_ack   = 1'b0;
+            SCR1_SEL_PORT0    : sel_req_ack   = port0_req_ack;
+            SCR1_SEL_PORT1    : sel_req_ack   = port1_req_ack;
+            SCR1_SEL_PORT2    : sel_req_ack   = port2_req_ack;
+            SCR1_SEL_INVALID  : sel_req_ack   = 1'b1;
+            default           : sel_req_ack   = 1'b0;
         endcase
     end else begin
         sel_req_ack = 1'b0;
@@ -157,7 +163,7 @@ always_comb begin
             sel_resp    = port2_resp;
         end
         default         : begin
-            sel_rdata   = '0;
+            sel_rdata   = 32'hBADBADBA;
             sel_resp    = SCR1_MEM_RESP_RDY_ER;
         end
     endcase

@@ -227,6 +227,9 @@ riscv_arch: | $(bld_dir)
 hello: | $(bld_dir)
 	-$(MAKE) -C $(tst_dir)/hello EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
+null_deref: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/null_deref EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
 clean_hex: | $(bld_dir)
 	$(RM) $(bld_dir)/*.hex
 
